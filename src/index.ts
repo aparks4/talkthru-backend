@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import { roomHandler } from './room';
 
 dotenv.config();
 const port = process.env.PORT || 8080;
@@ -21,6 +22,8 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   console.log('user is connected');
 
+  roomHandler(socket);
+
   // 'socket' object represents the event being emitted from the client or if this was the client listening then the 'socket' object would represent the event being emitted from the server.
   socket.on('disconnect', () => {
     console.log('user is disconnected');
@@ -28,6 +31,7 @@ io.on('connection', (socket) => {
 });
 
 app.get('/', (req: Request, res: Response) => {
+  req;
   res.send(`Listening to the server on ${port}`);
 });
 
