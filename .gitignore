@@ -4,3 +4,4 @@ logs
 .vscode
 *.logs
 *.env
+tslint.json
