@@ -56,8 +56,21 @@ export const roomHandler = (socket: Socket) => {
     }
   };
 
+  // Function to notify all peers of the peer that is sharing their screen
+  const startSharing = ({peerId, roomId}: IRoomParams) => {
+    socket.to(roomId).emit("user-started-sharing", peerId);
+  };
+
+  // Function to notify all peers that a peer has stopped sharing their screen
+  const stopSharing = (roomId: string) => {
+    socket.to(roomId).emit("user-stopped-sharing");
+  };
+
   // Listen for create-room event
   socket.on('create-room', createRoom);
   // Listen for join-room event
   socket.on('join-room', joinRoom);
+  // Listen for start/stop sharing events
+  socket.on("start-sharing", startSharing);
+  socket.on("stop-sharing", stopSharing);
 };
