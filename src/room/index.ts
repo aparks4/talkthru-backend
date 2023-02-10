@@ -1,12 +1,18 @@
 import { Socket } from 'socket.io';
 import { v4 as uuidV4 } from 'uuid';
 
-const rooms: Record<string, string[]> = {};
-
 interface IRoomParams {
   roomId: string;
   peerId: string;
 }
+
+interface IMessage {
+  content: string;
+  author?: string;
+  timestamp: number;
+}
+
+const rooms: Record<string, string[]> = {};
 
 export const roomHandler = (socket: Socket) => {
   // Function to create a new room
@@ -66,6 +72,12 @@ export const roomHandler = (socket: Socket) => {
     socket.to(roomId).emit("user-stopped-sharing");
   };
 
+  // Function to handle sharing messages between peers
+  const addMessage = (roomId: string, message: IMessage) => {
+    // Emit the message for all peers in 'roomId'
+    socket.to(roomId).emit("add-message", message);
+  };
+
   // Listen for create-room event
   socket.on('create-room', createRoom);
   // Listen for join-room event
@@ -73,4 +85,6 @@ export const roomHandler = (socket: Socket) => {
   // Listen for start/stop sharing events
   socket.on("start-sharing", startSharing);
   socket.on("stop-sharing", stopSharing);
+  // Listen for a chat message
+  socket.on("send-message", addMessage);
 };
