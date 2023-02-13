@@ -33,6 +33,10 @@ export const roomHandler = (socket: Socket) => {
     if (!rooms[roomId]) {
       rooms[roomId] = [];
     }
+    // Create chat log for room if it doesn't exist already
+    if (!chatLogs[roomId]) {
+      chatLogs[roomId] = [];
+    }
 
     // Sends old messages from chat log for 'roomId' to new peers who join the room
     socket.emit('get-messages', chatLogs[roomId]);
