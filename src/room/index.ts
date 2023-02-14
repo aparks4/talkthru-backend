@@ -1,9 +1,9 @@
 import { Socket } from 'socket.io';
 import { v4 as uuidV4 } from 'uuid';
 
-interface IRoomParams {
-  roomId: string;
+interface IUser {
   peerId: string;
+  userName: string;
 }
 
 interface IMessage {
@@ -12,7 +12,16 @@ interface IMessage {
   timestamp: number;
 }
 
-const rooms: Record<string, string[]> = {};
+interface IRoomParams {
+  roomId: string;
+  peerId: string;
+}
+
+interface IJoinRoomParams extends IRoomParams {
+  userName: string;
+}
+
+const rooms: Record<string, Record<string, IUser>> = {};
 const chatLogs: Record<string, IMessage[]> = {};
 
 export const roomHandler = (socket: Socket) => {
@@ -21,17 +30,17 @@ export const roomHandler = (socket: Socket) => {
     // Generate unique room ID using UUID v4
     const roomId = uuidV4();
     // Add room to the rooms object
-    rooms[roomId] = [];
+    rooms[roomId] = {};
     // Emit the created room information to the client
     socket.emit('room-created', { roomId });
     console.log('user created the room', roomId);
   };
 
   // Function to join an existing room
-  const joinRoom = ({ roomId, peerId }: IRoomParams) => {
+  const joinRoom = ({ roomId, peerId, userName }: IJoinRoomParams) => {
     // Create room if it doesn't exist already
     if (!rooms[roomId]) {
-      rooms[roomId] = [];
+      rooms[roomId] = {};
     }
     // Create chat log for room if it doesn't exist already
     if (!chatLogs[roomId]) {
@@ -43,11 +52,11 @@ export const roomHandler = (socket: Socket) => {
     
     console.log('user joined the room', roomId, peerId);
     // Add peer to the room's list of participants
-    rooms[roomId].push(peerId);
+    rooms[roomId][peerId] = { peerId, userName };
     // Join the room
     socket.join(roomId);
     // Emit event to other participants that a user has joined
-    socket.to(roomId).emit('user-joined', { peerId });
+    socket.to(roomId).emit('user-joined', { peerId, userName });
     // Emit event to get list of all participants
     socket.emit('get-users', {
       roomId,
@@ -66,7 +75,7 @@ export const roomHandler = (socket: Socket) => {
     // Check if the room exists
     if (rooms[roomId]) {
       // Remove the peer from the room's list of participants
-      rooms[roomId] = rooms[roomId].filter((id) => id !== peerId);
+      // rooms[roomId] = rooms[roomId].filter((id) => id !== peerId);
       // Emit event to other participants that a user has disconnected
       socket.to(roomId).emit('user-disconnected', peerId);
     }
