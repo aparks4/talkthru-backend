@@ -3,12 +3,12 @@ import dotenv from 'dotenv';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 import { roomHandler } from './room';
 import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-import bodyParser from 'body-parser';
 
-// import { handler } from './storeUsers';
+// Initialize prisma client
+const prisma = new PrismaClient();
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -47,25 +47,14 @@ app.get('/', (req: Request, res: Response) => {
   res.send(`Listening to the server on ${port}`);
 });
 
+// GET endpoint for PlanetScale users
 app.get('/users', async (req: Request, res: Response) => {
   req;
   const allUsers = await prisma.user.findMany();
   res.json(allUsers);
 });
 
-// app.post('/users', async (req: Request, res: Response) => {
-//   const { name, email } = req.body;
-//   const newUser = await prisma.user.create({
-//     data: {
-//       name,
-//       email,
-//     },
-//   })
-//   res.json(newUser);
-//   console.log('created user: ', newUser)
-// });
-
-
+// POST route for adding users to PlanetScale db when they sign up
 app.post('/users', async (req: Request, res: Response) => {
   const { email, name } = req.body;
   try {
