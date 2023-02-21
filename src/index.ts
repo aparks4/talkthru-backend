@@ -3,7 +3,12 @@ import dotenv from 'dotenv';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 import { roomHandler } from './room';
+import { PrismaClient } from '@prisma/client';
+
+// Initialize prisma client
+const prisma = new PrismaClient();
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -13,6 +18,7 @@ const port = process.env.PORT || 8080;
 const app: Express = express();
 // Use the CORS middleware for Cross-Origin Resource Sharing (CORS)
 app.use(cors({ origin: '*' }));
+app.use(bodyParser.json());
 const server = http.createServer(app);
 // Initializes a new instance of the 'socket.io' server and attaches the 'http' server instance. Allows 'socket.io' server to listen for websocket connections on the same port as the 'http' server, which is defined by the port constant. The 2nd argument is an options object that you can specify various configurations, more info here 'https://socket.io/docs/v4/server-options/'.
 const io = new Server(server, {
@@ -40,6 +46,30 @@ app.get('/', (req: Request, res: Response) => {
   // Send a response indicating the server is listening on the specified port
   res.send(`Listening to the server on ${port}`);
 });
+
+// GET endpoint for PlanetScale users
+app.get('/users', async (req: Request, res: Response) => {
+  req;
+  const allUsers = await prisma.user.findMany();
+  res.json(allUsers);
+});
+
+// POST route for adding users to PlanetScale db when they sign up
+app.post('/users', async (req: Request, res: Response) => {
+  const { email, name } = req.body;
+  try {
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+      },
+    });
+    res.status(201).json(newUser);
+    console.log('Created user: ', newUser);
+  } catch (error) {
+    console.log(error);
+  }
+})
 
 // Start the HTTP server and log that it is listening on the specified port
 server.listen(port, () => {
