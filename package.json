@@ -13,7 +13,6 @@
     "postinstall": "tsc",
     "deploy": "git add . && git commit -m Heroku && git push heroku master"
   },
-  "engines": { "node": "18.6.0" },
   "author": "",
   "license": "ISC",
   "devDependencies": {
