@@ -10,8 +10,9 @@
     "prebuild": "eslint --ext .ts --fix src",
     "build": "tsc",
     "watch": "tsc --watch",
+    "watch-node": "nodemon dist/index.js",
     "prestart": "npm run build",
-    "start": "concurrently --kill-others \"npm run watch\" \"nodemon .\"",
+    "start": "node dist/index.js",
     "postinstall": "tsc",
     "deploy": "git add . && git commit -m Heroku && git push heroku main"
   },
