@@ -72,6 +72,6 @@ app.post('/users', async (req: Request, res: Response) => {
 })
 
 // Start the HTTP server and log that it is listening on the specified port
-server.listen(port, () => {
+server.listen(process.env.PORT || 8080, () => {
   console.log(`Listening to the server on ${port}`);
 });
