@@ -1,1 +1,1 @@
-web: npm run start
+web: node dist/src/index.ts
