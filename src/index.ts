@@ -5,10 +5,7 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { roomHandler } from './room';
-import { PrismaClient } from '@prisma/client';
-
-// Initialize prisma client
-const prisma = new PrismaClient();
+import { userRouter } from './users';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -16,6 +13,9 @@ dotenv.config();
 const port = process.env.PORT || 8080;
 // Initialize the Express app
 const app: Express = express();
+// Middleware for parsing request bodies in x-www-form-urlencoded format
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 // Use the CORS middleware for Cross-Origin Resource Sharing (CORS)
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
@@ -47,29 +47,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send(`Listening to the server on ${port}`);
 });
 
-// GET endpoint for PlanetScale users
-app.get('/users', async (req: Request, res: Response) => {
-  req;
-  const allUsers = await prisma.user.findMany();
-  res.json(allUsers);
-});
-
-// POST route for adding users to PlanetScale db when they sign up
-app.post('/users', async (req: Request, res: Response) => {
-  const { email, name } = req.body;
-  try {
-    const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-      },
-    });
-    res.status(201).json(newUser);
-    console.log('Created user: ', newUser);
-  } catch (error) {
-    console.log(error);
-  }
-})
+app.use('/users', userRouter);
 
 // Start the HTTP server and log that it is listening on the specified port
 server.listen(process.env.PORT || 8080, () => {
