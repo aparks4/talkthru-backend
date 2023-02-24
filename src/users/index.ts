@@ -1,10 +1,7 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { Prisma, PrismaClient } from '@prisma/client';
-
-type UserCreateInput = Prisma.UserCreateInput & {
-  password: string;
-};
+import { PrismaClient } from '@prisma/client';
+import { IUser } from '../../types/types';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -29,7 +26,7 @@ router.post('/', async (req: Request, res: Response) => {
         name,
         email,
         password: hashedPassword,
-      } as UserCreateInput,
+      } as IUser,
     });
     res.status(201).json(newUser);
     console.log('Created user: ', newUser);
