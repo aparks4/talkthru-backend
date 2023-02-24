@@ -1,6 +1,5 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
@@ -11,10 +10,9 @@ datasource db {
 
 model User {
   id     Int     @id @default(autoincrement())
-  name   String
+  name   String @unique
   email  String @unique
+  password String
   online Boolean @default(false)
-  profile Profile?
-  profileId Int
 }
 
