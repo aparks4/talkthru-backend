@@ -6,6 +6,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { roomHandler } from './room';
 import { userRouter } from './users';
+import { loginRouter } from './login';
+import { verifyRouter } from './verify';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -47,7 +49,10 @@ app.get('/', (req: Request, res: Response) => {
   res.send(`Listening to the server on ${port}`);
 });
 
+// Routes
 app.use('/users', userRouter);
+app.use('/login', loginRouter);
+app.use('/verify', verifyRouter);
 
 // Start the HTTP server and log that it is listening on the specified port
 server.listen(process.env.PORT || 8080, () => {
