@@ -17,13 +17,12 @@ model User {
   subject String @default("")
   expertise String @default("")
   profile Profile?
-
 }
 
 model Profile {
   id Int @id @default(autoincrement())
   picture String?
-  fullName String
+  userName String
   bio String
   userId Int @unique
   user User @relation(fields: [userId], references: [id])
