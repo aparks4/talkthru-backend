@@ -5,9 +5,10 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { roomHandler } from './room';
-import { userRouter } from './users';
+import { usersRouter } from './users';
 import { loginRouter } from './login';
 import { verifyRouter } from './verify';
+import { userRouter } from './user';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -50,7 +51,8 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Routes
-app.use('/users', userRouter);
+app.use('/user', userRouter);
+app.use('/users', usersRouter);
 app.use('/login', loginRouter);
 app.use('/verify', verifyRouter);
 
