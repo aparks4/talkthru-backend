@@ -14,8 +14,8 @@ model User {
   email  String @unique
   password String
   online Boolean @default(false)
-  subject String
-  expertise String
+  subject String @default("")
+  expertise String @default("")
   profile Profile?
 
 }
