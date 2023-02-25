@@ -5,3 +5,9 @@ export interface IUser {
   password: string;
   online: boolean;
 }
+
+export interface IDecoded {
+  userId: number;
+  iat: number;
+  exp: number;
+}

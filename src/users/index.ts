@@ -50,4 +50,4 @@ router.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
-export const userRouter = router;
+export const usersRouter = router;
