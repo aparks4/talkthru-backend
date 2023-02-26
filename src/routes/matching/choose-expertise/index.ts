@@ -4,15 +4,40 @@ import { PrismaClient } from '@prisma/client';
 const router = express.Router();
 const prisma = new PrismaClient();
 
+// First create a map for expertise levels
+const expertiseMap = new Map();
+
+expertiseMap.set('beginner', 1);
+expertiseMap.set('intermediate', 2);
+expertiseMap.set('advanced', 3);
+
 router.get('/', async (req: Request, res: Response) => {
   req;
+  console.log(expertiseMap);
+
+  const allUsersMatching = await prisma.user.findMany({
+    where: {
+      matching: true,
+    },
+  });
+
+  allUsersMatching.forEach((user) => {
+    console.log(user);
+  });
+
   res.send('Choose Expertise Endpoint');
 });
 
 // Update route to update expertise
 router.put('/', async (req: Request, res: Response) => {
+  const subject = req.body.subject;
   const expertise = req.body.expertise;
-  const id = req.body.id;
+  const id = parseInt(req.body.id);
+
+  if (!subject) {
+    res.status(400).json({ message: 'subject is empty' });
+    return;
+  }
 
   if (!expertise) {
     res.status(400).json({ message: 'expertise is empty' });
@@ -41,6 +66,34 @@ router.put('/', async (req: Request, res: Response) => {
       res.status(404).json({ message: 'expertise was unable to be updated.' });
       return;
     }
+
+    const updatedMatching = await prisma.user.update({
+      where: { id },
+      data: { matching: true },
+    });
+
+    if (!updatedMatching) {
+      res.status(404).json({ message: 'could not update matching to true' });
+    }
+
+    // Algorithm
+    // Current user Id
+    // Iterate through all users, see who is matching.
+    // const allUsersMatching = await prisma.user.findMany({
+    //   where: {
+    //     matching: true,
+    //     subject,
+    //   },
+    // });
+
+    // allUsersMatching.forEach(async (user) => {
+    //   if (user.expertise === expertise) {
+    //     res.status(200).json(user);
+    //   }
+    // });
+
+    // Check to see if current user subject matches with any of the iterated user's subject.
+    // Nested iteration to check expertise level
 
     res.status(200).json(updatedExpertise);
   } catch (error) {
