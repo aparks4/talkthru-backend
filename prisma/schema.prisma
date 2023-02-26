@@ -17,6 +17,7 @@ model User {
   subject String @default("")
   expertise String @default("")
   profile Profile?
+  roomId String?
 }
 
 model Profile {
