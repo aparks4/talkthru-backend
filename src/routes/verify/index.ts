@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { IDecoded } from '../../types/types';
+import { IDecoded } from '../../../types/types';
 
 const router = express.Router();
 
