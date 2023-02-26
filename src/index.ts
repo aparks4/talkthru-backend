@@ -9,6 +9,7 @@ import { usersRouter } from './users';
 import { loginRouter } from './login';
 import { verifyRouter } from './verify';
 import { userRouter } from './user';
+import { profilesRouter } from './profiles';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -55,6 +56,7 @@ app.use('/user', userRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter);
 app.use('/verify', verifyRouter);
+app.use('/profiles', profilesRouter);
 
 // Start the HTTP server and log that it is listening on the specified port
 server.listen(process.env.PORT || 8080, () => {

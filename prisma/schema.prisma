@@ -16,16 +16,16 @@ model User {
   online Boolean @default(false)
   subject String @default("")
   expertise String @default("")
-  profile Profile?
+  profile Profile? 
 }
 
 model Profile {
   id Int @id @default(autoincrement())
   picture String?
-  userName String
+  userName String?
   bio String?
-  userId Int @unique
   user User @relation(fields: [userId], references: [id])
-  occupation String
-  location String
+  userId Int @unique
+  occupation String?
+  location String?
 }
