@@ -74,6 +74,7 @@ router.put('/', async (req: Request, res: Response) => {
 
     if (!updatedMatching) {
       res.status(404).json({ message: 'could not update matching to true' });
+      return;
     }
 
     // Iterate through all users, see who is matching.
@@ -95,16 +96,26 @@ router.put('/', async (req: Request, res: Response) => {
       [que[0], que[1]] = [que[1], que[0]];
     }
 
+    let matchingUser = null;
+
     for (const currLevel of que) {
-      allUsersMatching.forEach(async (user) => {
+      for (const user of allUsersMatching) {
         const userLevel = expertiseMap.get(user.expertise);
-        if (userLevel === currLevel) {
-          res.status(200).json(user);
+        if (userLevel === currLevel && user.id !== id) {
+          matchingUser = user;
+          break;
         }
-      });
+      }
+      if (matchingUser) {
+        break;
+      }
     }
 
-    res.status(404).json({ message: 'Could not find a match' });
+    if (matchingUser) {
+      res.status(200).json(matchingUser);
+    } else {
+      res.status(404).json({ message: 'Could not find a match' });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Choose expertise put route error.' });
