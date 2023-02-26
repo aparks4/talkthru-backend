@@ -4,11 +4,13 @@ import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { roomHandler } from './room';
-import { usersRouter } from './users';
-import { loginRouter } from './login';
-import { verifyRouter } from './verify';
-import { userRouter } from './user';
+import { roomHandler } from './routes/room';
+import { usersRouter } from './routes/users';
+import { loginRouter } from './routes/login';
+import { verifyRouter } from './routes/verify';
+import { userRouter } from './routes/user';
+import { chooseSubjectRouter } from './routes/matching/choose-subject';
+import { chooseExpertiseRouter } from './routes/matching/choose-expertise';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -55,6 +57,8 @@ app.use('/user', userRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter);
 app.use('/verify', verifyRouter);
+app.use('/matching/choose-subject', chooseSubjectRouter);
+app.use('/matching/choose-expertise', chooseExpertiseRouter);
 
 // Start the HTTP server and log that it is listening on the specified port
 server.listen(process.env.PORT || 8080, () => {
