@@ -1,11 +1,11 @@
 export interface IUser {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  online: boolean;
-  subject: string;
-  expertise: string;
+	id: number;
+	name: string;
+	email: string;
+	password: string;
+	matching: boolean;
+	subject: string;
+	expertise: string;
 }
 
 export interface IDecoded {

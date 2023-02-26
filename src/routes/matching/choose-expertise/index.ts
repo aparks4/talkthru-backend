@@ -79,19 +79,33 @@ router.put('/', async (req: Request, res: Response) => {
     // Algorithm
     // Current user Id
     // Iterate through all users, see who is matching.
-    // const allUsersMatching = await prisma.user.findMany({
-    //   where: {
-    //     matching: true,
-    //     subject,
-    //   },
-    // });
+    const allUsersMatching = await prisma.user.findMany({
+			where: {
+				matching: true,
+				subject,
+			},
+		});
 
-    // allUsersMatching.forEach(async (user) => {
-    //   if (user.expertise === expertise) {
-    //     res.status(200).json(user);
-    //   }
-    // });
+		// Keep track of the order to search by
+		let que = [1, 2, 3];
 
+		if (expertiseMap.get(expertise) === 3) {
+			// Searches: 3 -> 2 -> 1
+			que = que.reverse();
+		} else if (expertiseMap.get(expertise) === 2) {
+			// Searches: 2 -> 1 -> 3
+			[que[0], que[1]] = [que[1], que[0]];
+		}
+
+		for (let currLevel of que) {
+			allUsersMatching.forEach(async (user) => {
+				const userLevel = expertiseMap.get(user.expertise);
+				if (userLevel === currLevel) {
+					res.status(200).json(user);
+				}
+			});
+		}
+    
     // Check to see if current user subject matches with any of the iterated user's subject.
     // Nested iteration to check expertise level
 
