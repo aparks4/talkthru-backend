@@ -97,7 +97,7 @@ router.put('/', async (req: Request, res: Response) => {
 			[que[0], que[1]] = [que[1], que[0]];
 		}
 
-		for (let currLevel of que) {
+		for (const currLevel of que) {
 			allUsersMatching.forEach(async (user) => {
 				const userLevel = expertiseMap.get(user.expertise);
 				if (userLevel === currLevel) {
