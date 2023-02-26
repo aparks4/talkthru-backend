@@ -13,7 +13,7 @@ model User {
   name   String @unique
   email  String @unique
   password String
-  online Boolean @default(false)
+  matching Boolean @default(false)
   subject String @default("")
   expertise String @default("")
   profile Profile?
