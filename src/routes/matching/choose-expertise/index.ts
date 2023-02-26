@@ -7,9 +7,9 @@ const prisma = new PrismaClient();
 // First create a map for expertise levels
 const expertiseMap = new Map();
 
-expertiseMap.set('beginner', 1);
-expertiseMap.set('intermediate', 2);
-expertiseMap.set('advanced', 3);
+expertiseMap.set('Beginner', 1);
+expertiseMap.set('Intermediate', 2);
+expertiseMap.set('Advanced', 3);
 
 router.get('/', async (req: Request, res: Response) => {
   req;
@@ -76,43 +76,38 @@ router.put('/', async (req: Request, res: Response) => {
       res.status(404).json({ message: 'could not update matching to true' });
     }
 
-    // Algorithm
-    // Current user Id
     // Iterate through all users, see who is matching.
     const allUsersMatching = await prisma.user.findMany({
-			where: {
-				matching: true,
-				subject,
-			},
-		});
+      where: {
+        matching: true,
+        subject,
+      },
+    });
 
-		// Keep track of the order to search by
-		let que = [1, 2, 3];
+    // Keep track of the order to search by
+    let que = [1, 2, 3];
 
-		if (expertiseMap.get(expertise) === 3) {
-			// Searches: 3 -> 2 -> 1
-			que = que.reverse();
-		} else if (expertiseMap.get(expertise) === 2) {
-			// Searches: 2 -> 1 -> 3
-			[que[0], que[1]] = [que[1], que[0]];
-		}
+    if (expertiseMap.get(expertise) === 3) {
+      // Searches: 3 -> 2 -> 1
+      que = que.reverse();
+    } else if (expertiseMap.get(expertise) === 2) {
+      // Searches: 2 -> 1 -> 3
+      [que[0], que[1]] = [que[1], que[0]];
+    }
 
-		for (const currLevel of que) {
-			allUsersMatching.forEach(async (user) => {
-				const userLevel = expertiseMap.get(user.expertise);
-				if (userLevel === currLevel) {
-					res.status(200).json(user);
-				}
-			});
-		}
-    
-    // Check to see if current user subject matches with any of the iterated user's subject.
-    // Nested iteration to check expertise level
+    for (const currLevel of que) {
+      allUsersMatching.forEach(async (user) => {
+        const userLevel = expertiseMap.get(user.expertise);
+        if (userLevel === currLevel) {
+          res.status(200).json(user);
+        }
+      });
+    }
 
-    res.status(200).json(updatedExpertise);
+    res.status(404).json({ message: 'Could not find a match' });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: 'Error updating expertise.' });
+    res.status(500).json({ message: 'Choose expertise put route error.' });
   }
 });
 
