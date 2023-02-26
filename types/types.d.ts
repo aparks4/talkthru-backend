@@ -4,6 +4,8 @@ export interface IUser {
   email: string;
   password: string;
   online: boolean;
+  subject: string;
+  expertise: string;
 }
 
 export interface IDecoded {
