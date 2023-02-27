@@ -10,6 +10,16 @@ export interface IUser {
 	expertise: string;
 }
 
+export interface IProfile {
+	id: number;
+	picture?: string;
+	userName?: string;
+	bio?: string;
+	userId: number;
+	occupation?: string;
+	location?: string;
+}
+
 
 export interface IDecoded {
   userId: number;
