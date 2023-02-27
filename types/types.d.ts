@@ -1,3 +1,5 @@
+import { Profile, User, UserWhereUniqueInput } from "@prisma/client";
+
 export interface IUser {
 	id: number;
 	name: string;
@@ -7,6 +9,7 @@ export interface IUser {
 	subject: string;
 	expertise: string;
 }
+
 
 export interface IDecoded {
   userId: number;

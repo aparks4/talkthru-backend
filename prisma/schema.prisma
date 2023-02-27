@@ -16,17 +16,17 @@ model User {
   matching Boolean @default(false)
   subject String @default("")
   expertise String @default("")
-  profile Profile?
+  profile Profile? 
   roomId String?
 }
 
 model Profile {
   id Int @id @default(autoincrement())
   picture String?
-  userName String
+  userName String?
   bio String?
   userId Int @unique
   user User @relation(fields: [userId], references: [id])
-  occupation String
-  location String
+  occupation String?
+  location String?
 }

@@ -12,6 +12,7 @@ import { userRouter } from './routes/user';
 import { chooseSubjectRouter } from './routes/matching/choose-subject';
 import { chooseExpertiseRouter } from './routes/matching/choose-expertise';
 import { updateRoomIdRouter } from './routes/matching/update-roomid';
+import { profilesRouter } from './profiles';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -61,6 +62,7 @@ app.use('/verify', verifyRouter);
 app.use('/matching/choose-subject', chooseSubjectRouter);
 app.use('/matching/choose-expertise', chooseExpertiseRouter);
 app.use('/matching/update-roomid', updateRoomIdRouter);
+app.use('/profiles', profilesRouter);
 
 // Start the HTTP server and log that it is listening on the specified port
 server.listen(process.env.PORT || 8080, () => {
