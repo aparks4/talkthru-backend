@@ -1,8 +1,7 @@
-
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
-import { IUser } from '../../types/types';
+import { IUser } from '../../../types/types';
 
 const router = express.Router();
 const prisma = new PrismaClient();

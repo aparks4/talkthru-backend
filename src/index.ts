@@ -4,12 +4,15 @@ import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { roomHandler } from './room';
-import { usersRouter } from './users';
-import { loginRouter } from './login';
-import { verifyRouter } from './verify';
-import { userRouter } from './user';
+import { roomHandler } from './routes/room';
+import { usersRouter } from './routes/users';
+import { loginRouter } from './routes/login';
+import { verifyRouter } from './routes/verify';
+import { userRouter } from './routes/user';
 import { profilesRouter } from './profiles';
+import { chooseSubjectRouter } from './routes/matching/choose-subject';
+import { chooseExpertiseRouter } from './routes/matching/choose-expertise';
+import { updateRoomIdRouter } from './routes/matching/update-roomid';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -51,12 +54,15 @@ app.get('/', (req: Request, res: Response) => {
   res.send(`Listening to the server on ${port}`);
 });
 
-// Routes
+// Routers
 app.use('/user', userRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter);
 app.use('/verify', verifyRouter);
 app.use('/profiles', profilesRouter);
+app.use('/matching/choose-subject', chooseSubjectRouter);
+app.use('/matching/choose-expertise', chooseExpertiseRouter);
+app.use('/matching/update-roomid', updateRoomIdRouter);
 
 // Start the HTTP server and log that it is listening on the specified port
 server.listen(process.env.PORT || 8080, () => {
