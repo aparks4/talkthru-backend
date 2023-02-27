@@ -17,6 +17,7 @@ model User {
   subject String @default("")
   expertise String @default("")
   profile Profile? 
+  roomId String?
 }
 
 model Profile {
@@ -24,8 +25,8 @@ model Profile {
   picture String?
   userName String?
   bio String?
-  user User @relation(fields: [userId], references: [id])
   userId Int @unique
+  user User @relation(fields: [userId], references: [id])
   occupation String?
   location String?
 }
