@@ -11,22 +11,5 @@ router.get('/', async (req: Request, res: Response) => {
   res.json(allProfiles);
 });
 
-// POST route for adding users to PlanetScale db when they sign up
-router.post('/', async (req: Request, res: Response) => {
-  const { userId } = req.body;
-  console.log('Current user data:', { userId });
-  try {
-    const newProfile = await prisma.profile.create({
-      data: {
-        userId
-      },
-    });
-    res.status(201).json(newProfile);
-    console.log('Created profile: ', newProfile);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
 
 export const profilesRouter = router;

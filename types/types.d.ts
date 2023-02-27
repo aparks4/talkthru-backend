@@ -1,5 +1,4 @@
-import { Profile, User } from "@prisma/client";
-import { profile } from "console";
+import { Profile, User, UserWhereUniqueInput } from "@prisma/client";
 
 export interface IUser {
   id: number;
@@ -7,10 +6,7 @@ export interface IUser {
   email: string;
   password: string;
   online: boolean;
-  // profile?: Profile;
-  // profileId: number;
 }
-
 
 
 export interface IDecoded {

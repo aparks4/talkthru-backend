@@ -27,12 +27,16 @@ router.post('/', async (req: Request, res: Response) => {
         name,
         email,
         password: hashedPassword,
-        // profile: await prisma.profile.create({
-        //   data: {
-        //     userName: email,
-        //   }
-        // }),
       } as IUser,
+    });
+    await prisma.profile.create({
+      data: {
+        user: {
+          connect: {
+            id: newUser.id
+          }
+        }
+      } 
     });
     res.status(201).json(newUser);
     console.log('Created user: ', newUser);
