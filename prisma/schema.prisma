@@ -16,7 +16,7 @@ model User {
   matching Boolean @default(false)
   subject String @default("")
   expertise String @default("")
-  profile Profile? 
+  profile Profile?
   roomId String?
 }
 
