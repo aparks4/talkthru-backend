@@ -13,6 +13,7 @@ import { profilesRouter } from './profiles';
 import { chooseSubjectRouter } from './routes/matching/choose-subject';
 import { chooseExpertiseRouter } from './routes/matching/choose-expertise';
 import { updateRoomIdRouter } from './routes/matching/update-roomid';
+import { profileRouter } from './profile';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -59,6 +60,7 @@ app.use('/user', userRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter);
 app.use('/verify', verifyRouter);
+app.use('/profile', profileRouter);
 app.use('/profiles', profilesRouter);
 app.use('/matching/choose-subject', chooseSubjectRouter);
 app.use('/matching/choose-expertise', chooseExpertiseRouter);
