@@ -22,16 +22,16 @@ model User {
 
 model Profile {
   id Int @id @default(autoincrement())
-  picture String?
-  fullName String? 
-  userName String?
-  bio String?
+  picture String? @default("")
+  fullName String? @default("")
+  userName String? @default("")
+  bio String? @default("")
   userId Int @unique
   user User @relation(fields: [userId], references: [id])
   birthday DateTime?
-  occupation String?
-  location String?
+  occupation String? @default("")
+  location String? @default("")
   timeZone String? @default("")
-  phoneNumber String?
-  email String? 
+  phoneNumber String? @default("")
+  email String? @default("")
 }
