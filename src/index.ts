@@ -9,12 +9,12 @@ import { usersRouter } from './routes/users';
 import { loginRouter } from './routes/login';
 import { verifyRouter } from './routes/verify';
 import { userRouter } from './routes/user';
-import { profilesRouter } from './profiles';
+import { profilesRouter } from './routes/profiles';
 import { chooseSubjectRouter } from './routes/matching/choose-subject';
 import { chooseExpertiseRouter } from './routes/matching/choose-expertise';
 import { updateRoomIdRouter } from './routes/matching/update-roomid';
 import { matchUserRouter } from './routes/matching/match-user';
-import { profileRouter } from './profile';
+import { profileRouter } from './routes/profile';
 
 // Load environment variables from the .env file
 dotenv.config();
