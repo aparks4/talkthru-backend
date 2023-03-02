@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
-import { IDecoded } from '../../types/types';
+import { IDecoded } from '../../../types/types';
 
 const router = express.Router();
 const prisma = new PrismaClient();
