@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
+// import { findUser } from './findUser';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -65,11 +66,14 @@ router.put('/', async (req: Request, res: Response) => {
 			}
 		}
 
+		// const matchedUser = findUser({ candidates, userExpertise: user.expertise });
+
 		// No matchedUser found --> Creates new room
 		if (!matchedUser) {
+			const newRoom = uuid();
 			const updatedRoom = await prisma.user.update({
 				where: { id },
-				data: { roomId: uuid() },
+				data: { roomId: newRoom },
 			});
 
 			if (!updatedRoom) {
