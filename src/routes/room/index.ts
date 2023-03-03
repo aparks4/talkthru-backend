@@ -27,7 +27,7 @@ const chatLogs: Record<string, IMessage[]> = {};
 export const roomHandler = (socket: Socket) => {
 	// Function to create a new room
 	const createRoom = ({ roomId }: { roomId: string }) => {
-		console.log('createRoom called', roomId);
+		// console.log('createRoom called', roomId);
 		// Check if roomId doesn't exist, otherwise it will delete the users from the room
 		if (!rooms[roomId]) {
 			rooms[roomId] = {};
@@ -38,8 +38,8 @@ export const roomHandler = (socket: Socket) => {
 
 	// Function to join an existing room
 	const joinRoom = ({ roomId, peerId, userName }: IJoinRoomParams) => {
-		console.log('joinRoom called', peerId);
-		console.log({ participants: rooms[roomId] });
+		// console.log('joinRoom called', peerId);
+		// console.log({ participants: rooms[roomId] });
 		// Add user to room
 		rooms[roomId][peerId] = { peerId, userName };
 
@@ -63,7 +63,7 @@ export const roomHandler = (socket: Socket) => {
 
 		// On socket disconnect, leave the room
 		socket.on('disconnect', () => {
-			console.log('user left the room', peerId);
+			// console.log('user left the room', peerId);
 			leaveRoom({ roomId, peerId });
 		});
 	};
