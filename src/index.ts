@@ -41,8 +41,7 @@ const server = http.createServer(app);
 // Initializes a new instance of the 'socket.io' server and attaches the 'http' server instance. Allows 'socket.io' server to listen for websocket connections on the same port as the 'http' server, which is defined by the port constant. The 2nd argument is an options object that you can specify various configurations, more info here 'https://socket.io/docs/v4/server-options/'.
 const io = new Server(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
+    origin: process.env.CORS_ORIGIN_URL,
   },
 });
 
