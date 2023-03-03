@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { v4 as uuidV4 } from 'uuid';
+// import { v4 as uuidV4 } from 'uuid';
 
 interface IUser {
   peerId: string;
@@ -26,57 +26,46 @@ const chatLogs: Record<string, IMessage[]> = {};
 
 export const roomHandler = (socket: Socket) => {
 	// Function to create a new room
-	const createRoom = () => {
-		// Generate unique room ID using UUID v4
-		const roomId = uuidV4();
-		// Add room to the rooms object
-		rooms[roomId] = {};
+	const createRoom = ({ roomId }: { roomId: string }) => {
+		// console.log('createRoom called', roomId);
+		// Check if roomId doesn't exist, otherwise it will delete the users from the room
+		if (!rooms[roomId]) {
+			rooms[roomId] = {};
+		}
 		// Emit the created room information to the client
 		socket.emit('room-created', { roomId });
-		console.log('user created the room', roomId);
 	};
 
 	// Function to join an existing room
 	const joinRoom = ({ roomId, peerId, userName }: IJoinRoomParams) => {
-		if (!rooms[roomId]) {
-			// Create room if it doesn't exist already
-			// Add user to room to wait
-			rooms[roomId][peerId] = { peerId, userName };
-		} else {
-			// Room exists with a matching peer
-			// Add user to room to wait
-			rooms[roomId][peerId] = { peerId, userName };
+		// console.log('joinRoom called', peerId);
+		// console.log({ participants: rooms[roomId] });
+		// Add user to room
+		rooms[roomId][peerId] = { peerId, userName };
 
-			// Create chat log for room if it doesn't exist already
-			if (!chatLogs[roomId]) {
-				chatLogs[roomId] = [];
-			}
-
-			// Sends old messages from chat log for 'roomId' to new peers who join the room
-			socket.emit('get-messages', chatLogs[roomId]);
-
-			console.log('user joined the room', roomId, peerId);
-			// Add peer to the room's list of participants
-			// rooms[roomId][peerId] = { peerId, userName };
-			// Join the room
-			socket.join(roomId);
-			// Emit event to other participants that a user has joined
-			socket.to(roomId).emit('user-joined', { peerId, userName });
-			// Emit event to get list of all participants
-			socket.emit('get-users', {
-				roomId,
-				participants: rooms[roomId],
-			});
-
-			// Emit event to navigate users to the room
-			socket.to(roomId).emit('room-ready', { participants: rooms[roomId] });
-
-			// On socket disconnect, leave the room
-			socket.on('disconnect', () => {
-				console.log('user left the room', peerId);
-				leaveRoom({ roomId, peerId });
-			});
+		// Create chat log for room if it doesn't exist already
+		if (!chatLogs[roomId]) {
+			chatLogs[roomId] = [];
 		}
+
+		// Sends old messages from chat log for 'roomId' to new peers who join the room
+		socket.emit('get-messages', chatLogs[roomId]);
+
+		// Join the room
+		socket.join(roomId);
+		// Emit event to other existing users that a user has joined
+		socket.to(roomId).emit('user-joined', { peerId, userName });
+		// Emit event to get list of all participants
+		socket.emit('get-users', {
+			roomId,
+			participants: rooms[roomId],
+		});
+
+		// On socket disconnect, leave the room
+		socket.on('disconnect', () => {
+			// console.log('user left the room', peerId);
+			leaveRoom({ roomId, peerId });
+		});
 	};
 
 	// Function to leave a room
