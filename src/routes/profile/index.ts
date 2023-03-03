@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
-import { IDecoded } from '../../types/types';
+import { IDecoded } from '../../../types/types';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -39,13 +39,13 @@ router.get('/', async (req: Request, res: Response) => {
 
 // PUT endpoint to update current user's profile
 router.put('/', async (req: Request, res: Response) => {
-    const { userId, picture, userName, bio, occupation, location } = req.body;
+    const { userId, picture, fullName, userName, bio, occupation, location, timeZone, phoneNumber, email } = req.body;
 
     try {
         // Update the user's profile
         const updatedProfile = await prisma.profile.update({
             where: { userId },
-            data: { picture, userName, bio, occupation, location }
+            data: { picture, fullName, userName, bio, occupation, location, timeZone, phoneNumber, email }
         });
 
         // Return the updated profile

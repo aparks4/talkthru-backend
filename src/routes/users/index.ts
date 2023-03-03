@@ -30,12 +30,14 @@ router.post('/', async (req: Request, res: Response) => {
     });
     await prisma.profile.create({
       data: {
+        email: newUser.email,
+        fullName: newUser.name,
         user: {
           connect: {
             id: newUser.id
           }
         }
-      } 
+      }
     });
     res.status(201).json(newUser);
     console.log('Created user: ', newUser);
