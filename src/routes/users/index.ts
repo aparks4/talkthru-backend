@@ -48,7 +48,7 @@ router.post('/', async (req: Request, res: Response) => {
 
 // DELETE route for deleting a user
 router.delete('/:id', async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   try {
     const user = await prisma.user.delete({
       where: { id },

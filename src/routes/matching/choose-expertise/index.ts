@@ -23,7 +23,7 @@ router.get('/', async (req: Request, res: Response) => {
 // Update route to update expertise
 router.put('/', async (req: Request, res: Response) => {
 	const expertise = req.body.expertise;
-	const id = parseInt(req.body.id);
+	const id = req.body.id;
 
 	if (!expertise) {
 		res.status(400).json({ message: 'expertise is empty' });

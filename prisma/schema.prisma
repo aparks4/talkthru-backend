@@ -9,9 +9,9 @@ datasource db {
 }
 
 model User {
-  id     Int     @id @default(autoincrement())
-  name   String @unique
-  email  String @unique
+  id     String  @id @default(uuid()) @unique
+  name   String  @unique
+  email  String  @unique
   password String
   matching Boolean @default(false)
   subject String @default("")
@@ -26,7 +26,7 @@ model Profile {
   fullName String? @default("")
   userName String? @default("")
   bio String? @default("")
-  userId Int @unique
+  userId String @unique
   user User @relation(fields: [userId], references: [id])
   birthday DateTime?
   occupation String? @default("")

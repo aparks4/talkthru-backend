@@ -11,7 +11,7 @@ router.get('/', async (req: Request, res: Response) => {
 
 // Updates user room id
 router.put('/', async (req: Request, res: Response) => {
-  const id = parseInt(req.body.id);
+  const id = req.body.id;
   const roomId = req.body.roomId;
 
   if (!roomId) {

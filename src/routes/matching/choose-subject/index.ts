@@ -12,7 +12,7 @@ router.get('/', async (req: Request, res: Response) => {
 // Update route to update subject
 router.put('/', async (req: Request, res: Response) => {
   const subject = req.body.subject;
-  const id = parseInt(req.body.id);
+  const id = req.body.id;
 
   if (!subject) {
     res.status(400).json({ message: 'Subject is empty' });

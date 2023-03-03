@@ -15,7 +15,7 @@ expertiseMap.set('Advanced', 3);
 
 // Route to match user
 router.put('/', async (req: Request, res: Response) => {
-	const id = parseInt(req.body.id);
+	const id = req.body.id;
 
 	if (!id) {
 		res.status(400).json({ message: 'User id is empty' });
