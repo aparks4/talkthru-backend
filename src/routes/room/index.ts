@@ -43,7 +43,7 @@ export const roomHandler = (socket: Socket) => {
 			rooms[roomId] = {};
 		}
 
-		// Add user to room
+		// Add peer to room
 		rooms[roomId][peerId] = { peerId, peerName };
 
 		// Create messages for room if it doesn't exist
@@ -56,20 +56,20 @@ export const roomHandler = (socket: Socket) => {
 			notes[peerId] = [];
 		}
 
-		// Sends chat history for room and peer to new peers who join the room
+		// Sends chat history to new peers when they join the room
 		socket.emit('get-history', { messagesHistory: messages[roomId], notesHistory: notes[peerId] });
 
 		// Join the room
 		socket.join(roomId);
-		// Emit event to other existing users that a user has joined
+		// Emit event to other existing peers that a new peer has joined
 		socket.to(roomId).emit('user-joined', { peerId, peerName });
-		// Emit event to get list of all participants
+		// Emit event to get list of all peers
 		socket.emit('get-users', {
 			roomId,
 			participants: rooms[roomId],
 		});
 
-		// Listener to remove user from records
+		// Listener to remove peer from records
 		socket.on('disconnect', () => {
 			leaveRoom({ roomId, peerId });
 		});
@@ -82,7 +82,7 @@ export const roomHandler = (socket: Socket) => {
 			// Remove the peer from the room's list of participants
 			// rooms[roomId] = rooms[roomId].filter((id) => id !== peerId);
 
-			// Emit event to other participants that a user has disconnected
+			// Emit event to other peers that a user has disconnected
 			socket.to(roomId).emit('user-disconnected', peerId);
 		}
 	};
@@ -107,18 +107,18 @@ export const roomHandler = (socket: Socket) => {
 		// Store new message in room's messages
 		messages[roomId].push(message);
 
-		// Emit the message for all peers in 'roomId'
+		// Emit the message for all peers in room
 		socket.to(roomId).emit('add-message', message);
 	};
 
-	// Function to keep track of a user's notes
+	// Function to keep track of a peer's notes
 	const addNote = (peerId: string, note: IChatPost) => {
-		// Create new notes for user if it doesn't exist already
+		// Create new notes for peer if it doesn't exist already
 		if (!notes[peerId]) {
 			notes[peerId] = [];
 		}
 
-		// Store new note in user's notes
+		// Store new note in peer's notes
 		notes[peerId].push(note);
 	};
 
