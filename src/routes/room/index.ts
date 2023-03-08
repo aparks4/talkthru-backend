@@ -1,5 +1,4 @@
 import { Socket } from 'socket.io';
-// import { v4 as uuidV4 } from 'uuid';
 
 interface IUser {
 	peerId: string;
@@ -28,39 +27,43 @@ interface IJoinRoomParams extends IRoomParams {
 }
 
 const rooms: Record<string, Record<string, IUser>> = {};
-const chatLogs: Record<string, IMessage[]> = {};
+const messages: Record<string, IMessage[]> = {};
 const notes: Record<string, INote[]> = {};
 
 export const roomHandler = (socket: Socket) => {
 	// Function to create a new room
 	const createRoom = ({ roomId }: { roomId: string }) => {
-		// console.log('createRoom called', roomId);
-		// Check if roomId doesn't exist, otherwise it will delete the users from the room
+		// Create the room if it doesn't exist
 		if (!rooms[roomId]) {
 			rooms[roomId] = {};
 		}
+
 		// Emit the created room information to the client
 		socket.emit('room-created', { roomId });
 	};
 
 	// Function to join an existing room
 	const joinRoom = ({ roomId, peerId, userName }: IJoinRoomParams) => {
-		// console.log('joinRoom called', peerId);
-		// console.log({ participants: rooms[roomId] });
-		// Add user to room
+		// Create the room if it doesn't exist
 		if (!rooms[roomId]) {
-			rooms[roomId] = {}; // Create the room if it doesn't exist
+			rooms[roomId] = {};
 		}
 
+		// Add user to room
 		rooms[roomId][peerId] = { peerId, userName };
 
-		// Create chat log for room if it doesn't exist already
-		if (!chatLogs[roomId]) {
-			chatLogs[roomId] = [];
+		// Create messages for room if it doesn't exist
+		if (!messages[roomId]) {
+			messages[roomId] = [];
 		}
 
-		// Sends old messages from chat log for 'roomId' to new peers who join the room
-		socket.emit('get-history', { messagesHistory: chatLogs[roomId], notesHistory: notes[peerId] });
+		// Create notes for user if it doesn't exist
+		if (!notes[peerId]) {
+			notes[peerId] = [];
+		}
+
+		// Sends chat history for room and peer to new peers who join the room
+		socket.emit('get-history', { messagesHistory: messages[roomId], notesHistory: notes[peerId] });
 
 		// Join the room
 		socket.join(roomId);
@@ -72,9 +75,8 @@ export const roomHandler = (socket: Socket) => {
 			participants: rooms[roomId],
 		});
 
-		// On socket disconnect, leave the room
+		// Listener to remove user from records
 		socket.on('disconnect', () => {
-			// console.log('user left the room', peerId);
 			leaveRoom({ roomId, peerId });
 		});
 	};
@@ -85,6 +87,7 @@ export const roomHandler = (socket: Socket) => {
 		if (rooms[roomId]) {
 			// Remove the peer from the room's list of participants
 			// rooms[roomId] = rooms[roomId].filter((id) => id !== peerId);
+
 			// Emit event to other participants that a user has disconnected
 			socket.to(roomId).emit('user-disconnected', peerId);
 		}
@@ -102,25 +105,34 @@ export const roomHandler = (socket: Socket) => {
 
 	// Function to handle sharing messages between peers
 	const addMessage = (roomId: string, message: IMessage) => {
-		// Create chat log for 'roomId' if it doesn't exist already
-		if (!chatLogs[roomId]) {
-			chatLogs[roomId] = [];
+		// Create messages for room if it doesn't exist
+		if (!messages[roomId]) {
+			messages[roomId] = [];
 		}
 
-		// Add message to the chat log for 'roomId'
-		chatLogs[roomId].push(message);
+		// Store new message in room's messages
+		messages[roomId].push(message);
 
 		// Emit the message for all peers in 'roomId'
 		socket.to(roomId).emit('add-message', message);
 	};
 
-	// Listen for create-room event
+	// Function to keep track of a user's notes
+	const addNote = (userId: string, note: INote) => {
+		// Create new notes for user if it doesn't exist already
+		if (!notes[userId]) {
+			notes[userId] = [];
+		}
+
+		// Store new note in user's notes
+		notes[userId].push(note);
+	};
+
+	// Register listeners for signals/emits from client
 	socket.on('create-room', createRoom);
-	// Listen for join-room event
 	socket.on('join-room', joinRoom);
-	// Listen for start/stop sharing events
 	socket.on('start-sharing', startSharing);
 	socket.on('stop-sharing', stopSharing);
-	// Listen for a chat message
 	socket.on('send-message', addMessage);
+	socket.on('send-note', addNote);
 };
