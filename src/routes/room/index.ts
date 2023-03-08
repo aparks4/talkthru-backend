@@ -1,20 +1,8 @@
 import { Socket } from 'socket.io';
 
-interface IUser {
+interface IPeer {
 	peerId: string;
-	userName: string;
-}
-
-interface IMessage {
-	content: string;
-	author?: string;
-	timestamp: number;
-}
-
-interface INote {
-	content: string;
-	authorId: string;
-	timestamp: number;
+	peerName: string;
 }
 
 interface IRoomParams {
@@ -23,12 +11,18 @@ interface IRoomParams {
 }
 
 interface IJoinRoomParams extends IRoomParams {
-	userName: string;
+	peerName: string;
 }
 
-const rooms: Record<string, Record<string, IUser>> = {};
-const messages: Record<string, IMessage[]> = {};
-const notes: Record<string, INote[]> = {};
+interface IChatPost {
+	content: string;
+	authorId: string;
+	timestamp: number;
+}
+
+const rooms: Record<string, Record<string, IPeer>> = {};
+const messages: Record<string, IChatPost[]> = {};
+const notes: Record<string, IChatPost[]> = {};
 
 export const roomHandler = (socket: Socket) => {
 	// Function to create a new room
@@ -43,14 +37,14 @@ export const roomHandler = (socket: Socket) => {
 	};
 
 	// Function to join an existing room
-	const joinRoom = ({ roomId, peerId, userName }: IJoinRoomParams) => {
+	const joinRoom = ({ roomId, peerId, peerName }: IJoinRoomParams) => {
 		// Create the room if it doesn't exist
 		if (!rooms[roomId]) {
 			rooms[roomId] = {};
 		}
 
 		// Add user to room
-		rooms[roomId][peerId] = { peerId, userName };
+		rooms[roomId][peerId] = { peerId, peerName };
 
 		// Create messages for room if it doesn't exist
 		if (!messages[roomId]) {
@@ -68,7 +62,7 @@ export const roomHandler = (socket: Socket) => {
 		// Join the room
 		socket.join(roomId);
 		// Emit event to other existing users that a user has joined
-		socket.to(roomId).emit('user-joined', { peerId, userName });
+		socket.to(roomId).emit('user-joined', { peerId, peerName });
 		// Emit event to get list of all participants
 		socket.emit('get-users', {
 			roomId,
@@ -104,7 +98,7 @@ export const roomHandler = (socket: Socket) => {
 	};
 
 	// Function to handle sharing messages between peers
-	const addMessage = (roomId: string, message: IMessage) => {
+	const addMessage = (roomId: string, message: IChatPost) => {
 		// Create messages for room if it doesn't exist
 		if (!messages[roomId]) {
 			messages[roomId] = [];
@@ -118,14 +112,14 @@ export const roomHandler = (socket: Socket) => {
 	};
 
 	// Function to keep track of a user's notes
-	const addNote = (userId: string, note: INote) => {
+	const addNote = (peerId: string, note: IChatPost) => {
 		// Create new notes for user if it doesn't exist already
-		if (!notes[userId]) {
-			notes[userId] = [];
+		if (!notes[peerId]) {
+			notes[peerId] = [];
 		}
 
 		// Store new note in user's notes
-		notes[userId].push(note);
+		notes[peerId].push(note);
 	};
 
 	// Register listeners for signals/emits from client
